@@ -3412,8 +3412,8 @@
             "no-code",
             "embeddable"
         ],
-        "category": null,
-        "logo": "svg/opnform.svg",
+        "category": "productivity",
+        "logo": "svgs/opnform.svg",
         "minversion": "0.0.0",
         "port": "80"
     },

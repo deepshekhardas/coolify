@@ -231,6 +231,12 @@ class GithubPrivateRepositoryDeployKey extends Component
 
             return;
         }
+        if ($this->git_host === 'gitlab.com') {
+            $this->git_source = GitlabApp::where('name', 'Public GitLab')->first();
+            if ($this->git_source) {
+                return;
+            }
+        }
         if (str($this->repository_url)->startsWith('http')) {
             $this->git_host = $this->repository_url_parsed->getHost();
             $this->git_repository = $this->repository_url_parsed->getSegment(1).'/'.$this->repository_url_parsed->getSegment(2);

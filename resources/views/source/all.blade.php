@@ -5,7 +5,7 @@
     <div class="flex items-center gap-2">
         <h1>Sources</h1>
         @can('createAnyResource')
-            <x-modal-input buttonTitle="+ Add" title="New GitHub App" :closeOutside="false">
+            <x-modal-input buttonTitle="+ Add GitHub" title="New GitHub App" :closeOutside="false">
                 <livewire:source.github.create />
             </x-modal-input>
         @endcan
@@ -17,7 +17,6 @@
                 <a class="flex gap-2 text-center hover:no-underline coolbox group"
                     {{ wireNavigate() }}
                     href="{{ route('source.github.show', ['github_app_uuid' => data_get($source, 'uuid')]) }}">
-                    {{-- <x-git-icon class="dark:text-white w-8 h-8 mt-1" git="{{ $source->getMorphClass() }}" /> --}}
                     <div class="text-left dark:group-hover:text-white flex flex-col justify-center mx-6">
                         <div class="box-title">{{ $source->name }}</div>
                         @if (is_null($source->app_id))
@@ -29,6 +28,13 @@
                         @endif
                     </div>
                 </a>
+            @elseif ($source->getMorphClass() === 'App\Models\GitlabApp')
+                <div class="flex gap-2 text-center coolbox group">
+                    <div class="text-left dark:group-hover:text-white flex flex-col justify-center mx-6">
+                        <div class="box-title">{{ $source->name }}</div>
+                        <span class="box-description">GitLab App</span>
+                    </div>
+                </div>
             @endif
         @empty
             <div>

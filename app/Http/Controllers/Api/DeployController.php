@@ -487,6 +487,7 @@ class DeployController extends Controller
                     force_rebuild: $force,
                     pull_request_id: $pr,
                     is_api: true,
+                    commit: $resource->git_commit_sha ?: 'HEAD',
                 );
                 if ($result['status'] === 'queue_full') {
                     return ['message' => $result['message'], 'deployment_uuid' => null, 'status' => 429];

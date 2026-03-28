@@ -99,6 +99,7 @@ class Heading extends Component
             application: $this->application,
             deployment_uuid: $this->deploymentUuid,
             force_rebuild: $force_rebuild,
+            commit: $this->application->git_commit_sha ?: 'HEAD',
         );
         if ($result['status'] === 'queue_full') {
             $this->dispatch('error', 'Deployment queue full', $result['message']);

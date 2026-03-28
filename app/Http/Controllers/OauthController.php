@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OauthSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Exception\HttpException;

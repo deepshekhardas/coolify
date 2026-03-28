@@ -222,6 +222,11 @@ class PublicGitRepository extends Component
 
             return;
         }
+        if ($this->git_host === 'gitlab.com') {
+            $this->git_source = GitlabApp::where('name', 'Public GitLab')->first();
+
+            return;
+        }
         $this->git_repository = $this->repository_url;
         $this->git_source = 'other';
     }
@@ -236,6 +241,11 @@ class PublicGitRepository extends Component
         if ($this->git_source->getMorphClass() === \App\Models\GithubApp::class) {
             ['rate_limit_remaining' => $this->rate_limit_remaining, 'rate_limit_reset' => $this->rate_limit_reset] = githubApi(source: $this->git_source, endpoint: "/repos/{$this->git_repository}/branches/{$this->git_branch}");
             $this->rate_limit_reset = Carbon::parse((int) $this->rate_limit_reset)->format('Y-M-d H:i:s');
+            $this->branchFound = true;
+        }
+        if ($this->git_source->getMorphClass() === \App\Models\GitlabApp::class) {
+            $this->git_repository = str($this->git_repository)->replace('/', '%2F')->value();
+            gitlabApi(source: $this->git_source, endpoint: "/projects/{$this->git_repository}/repository/branches/{$this->git_branch}");
             $this->branchFound = true;
         }
     }

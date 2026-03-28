@@ -28,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
         $this->configurePasswords();
         $this->configureSanctumModel();
         $this->configureGitHubHttp();
+        $this->configureGitLabHttp();
 
     }
 
@@ -76,6 +77,19 @@ class AppServiceProvider extends ServiceProvider
                 return Http::withHeaders([
                     'Accept' => 'application/vnd.github.v3+json',
                 ])->baseUrl($api_url);
+            }
+        });
+    }
+
+    private function configureGitLabHttp(): void
+    {
+        Http::macro('GitLab', function (string $api_url, ?string $gitlab_access_token = null) {
+            if ($gitlab_access_token) {
+                return Http::withHeaders([
+                    'Private-Token' => $gitlab_access_token,
+                ])->baseUrl($api_url);
+            } else {
+                return Http::baseUrl($api_url);
             }
         });
     }

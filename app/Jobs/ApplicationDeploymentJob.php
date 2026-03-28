@@ -1294,13 +1294,18 @@ class ApplicationDeploymentJob implements ShouldBeEncrypted, ShouldQueue
                 }
             }
 
-            // Filter runtime variables for preview (only include variables that are available at runtime)
+            // Filter runtime variables (only include variables that are available at runtime)
+            $runtime_environment_variables = $sorted_environment_variables->filter(function ($env) {
+                return $env->is_runtime;
+            });
             $runtime_environment_variables_preview = $sorted_environment_variables_preview->filter(function ($env) {
                 return $env->is_runtime;
             });
 
+            $combined_runtime_environment_variables = $runtime_environment_variables->keyBy('key')->merge($runtime_environment_variables_preview->keyBy('key'));
+
             // Sort runtime environment variables: those referencing SERVICE_ variables come after others
-            $runtime_environment_variables_preview = $runtime_environment_variables_preview->sortBy(function ($env) {
+            $combined_runtime_environment_variables = $combined_runtime_environment_variables->sortBy(function ($env) {
                 if (str($env->value)->startsWith('$SERVICE_') || str($env->value)->contains('${SERVICE_')) {
                     return 2;
                 }
@@ -1308,7 +1313,7 @@ class ApplicationDeploymentJob implements ShouldBeEncrypted, ShouldQueue
                 return 1;
             });
 
-            foreach ($runtime_environment_variables_preview as $env) {
+            foreach ($combined_runtime_environment_variables as $env) {
                 $envs->push($env->key.'='.$env->real_value);
             }
             // Add PORT if not exists, use the first port as default
@@ -1587,10 +1592,20 @@ class ApplicationDeploymentJob implements ShouldBeEncrypted, ShouldQueue
                 }
             }
         } else {
-            $sorted_environment_variables = $this->application->environment_variables_preview()
-                ->where('is_buildtime', true)  // ONLY build-time variables
-                ->orderBy($this->application->settings->is_env_sorting_enabled ? 'key' : 'id')
+            $base_build_vars = $this->application->environment_variables()
+                ->where('is_buildtime', true)
                 ->get();
+            $preview_build_vars = $this->application->environment_variables_preview()
+                ->where('is_buildtime', true)
+                ->get();
+
+            $sorted_environment_variables = $base_build_vars->keyBy('key')->merge($preview_build_vars->keyBy('key'));
+
+            if ($this->application->settings->is_env_sorting_enabled) {
+                $sorted_environment_variables = $sorted_environment_variables->sortBy('key');
+            } else {
+                $sorted_environment_variables = $sorted_environment_variables->sortBy('id');
+            }
 
             // For Docker Compose, filter out SERVICE_FQDN and SERVICE_URL as we generate these with PR-specific values
             if ($this->build_pack === 'dockercompose') {
@@ -2335,7 +2350,10 @@ class ApplicationDeploymentJob implements ShouldBeEncrypted, ShouldQueue
                 }
             }
         } else {
-            foreach ($this->application->nixpacks_environment_variables_preview as $env) {
+            $base_vars = $this->application->nixpacks_environment_variables;
+            $preview_vars = $this->application->nixpacks_environment_variables_preview;
+            $combined_vars = $base_vars->keyBy('key')->merge($preview_vars->keyBy('key'));
+            foreach ($combined_vars as $env) {
                 if (! is_null($env->real_value) && $env->real_value !== '') {
                     $this->env_nixpacks_args->push("--env {$env->key}={$env->real_value}");
                 }
@@ -2359,10 +2377,14 @@ class ApplicationDeploymentJob implements ShouldBeEncrypted, ShouldQueue
         $coolify_envs = collect([]);
         $local_branch = $this->branch;
         if ($this->pull_request_id !== 0) {
+            $base_vars = $this->application->environment_variables;
+            $preview_vars = $this->application->environment_variables_preview;
+            $combined_vars = $base_vars->keyBy('key')->merge($preview_vars->keyBy('key'));
+
             // Only add SOURCE_COMMIT for runtime OR when explicitly enabled for build-time
             // SOURCE_COMMIT changes with each commit and breaks Docker cache if included in build
             if (! $forBuildTime || $this->application->settings->include_source_commit_in_build) {
-                if ($this->application->environment_variables_preview->where('key', 'SOURCE_COMMIT')->isEmpty()) {
+                if ($combined_vars->where('key', 'SOURCE_COMMIT')->isEmpty()) {
                     if (! is_null($this->commit)) {
                         $coolify_envs->put('SOURCE_COMMIT', $this->commit);
                     } else {
@@ -2370,14 +2392,14 @@ class ApplicationDeploymentJob implements ShouldBeEncrypted, ShouldQueue
                     }
                 }
             }
-            if ($this->application->environment_variables_preview->where('key', 'COOLIFY_FQDN')->isEmpty()) {
+            if ($combined_vars->where('key', 'COOLIFY_FQDN')->isEmpty()) {
                 if ((int) $this->application->compose_parsing_version >= 3) {
                     $coolify_envs->put('COOLIFY_URL', $this->preview->fqdn);
                 } else {
                     $coolify_envs->put('COOLIFY_FQDN', $this->preview->fqdn);
                 }
             }
-            if ($this->application->environment_variables_preview->where('key', 'COOLIFY_URL')->isEmpty()) {
+            if ($combined_vars->where('key', 'COOLIFY_URL')->isEmpty()) {
                 $url = str($this->preview->fqdn)->replace('http://', '')->replace('https://', '');
                 if ((int) $this->application->compose_parsing_version >= 3) {
                     $coolify_envs->put('COOLIFY_FQDN', $url);
@@ -2386,15 +2408,15 @@ class ApplicationDeploymentJob implements ShouldBeEncrypted, ShouldQueue
                 }
             }
             if ($this->application->build_pack !== 'dockercompose' || $this->application->compose_parsing_version === '1' || $this->application->compose_parsing_version === '2') {
-                if ($this->application->environment_variables_preview->where('key', 'COOLIFY_BRANCH')->isEmpty()) {
+                if ($combined_vars->where('key', 'COOLIFY_BRANCH')->isEmpty()) {
                     $coolify_envs->put('COOLIFY_BRANCH', $local_branch);
                 }
-                if ($this->application->environment_variables_preview->where('key', 'COOLIFY_RESOURCE_UUID')->isEmpty()) {
+                if ($combined_vars->where('key', 'COOLIFY_RESOURCE_UUID')->isEmpty()) {
                     $coolify_envs->put('COOLIFY_RESOURCE_UUID', $this->application->uuid);
                 }
                 // Only add COOLIFY_CONTAINER_NAME for runtime (not build-time) - it changes every deployment and breaks Docker cache
                 if (! $forBuildTime) {
-                    if ($this->application->environment_variables_preview->where('key', 'COOLIFY_CONTAINER_NAME')->isEmpty()) {
+                    if ($combined_vars->where('key', 'COOLIFY_CONTAINER_NAME')->isEmpty()) {
                         $coolify_envs->put('COOLIFY_CONTAINER_NAME', $this->container_name);
                     }
                 }

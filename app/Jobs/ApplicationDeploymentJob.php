@@ -832,6 +832,7 @@ class ApplicationDeploymentJob implements ShouldBeEncrypted, ShouldQueue
         }
 
         $this->application_deployment_queue->addLogEntry('New container started.');
+        $this->verifyContainersStarted();
     }
 
     private function deploy_dockerfile_buildpack()
@@ -1783,6 +1784,10 @@ class ApplicationDeploymentJob implements ShouldBeEncrypted, ShouldQueue
                     $this->application_deployment_queue->addLogEntry('Rolling update started.');
                     $this->start_by_compose_file();
                     $this->health_check();
+                    if ($this->newVersionIsHealthy) {
+                        $this->application_deployment_queue->addLogEntry('Waiting for proxy to detect new container...');
+                        Sleep::for(5)->seconds();
+                    }
                     $this->stop_running_container();
                     $this->application_deployment_queue->addLogEntry('Rolling update completed.');
                 }
@@ -3309,9 +3314,35 @@ COPY ./nginx.conf /etc/nginx/conf.d/default.conf");
                 }
             }
             $this->application_deployment_queue->addLogEntry('New container started.');
+            $this->verifyContainersStarted();
         } catch (Exception $e) {
             throw new DeploymentException("Failed to start container: {$e->getMessage()}", $e->getCode(), $e);
         }
+    }
+
+    private function verifyContainersStarted(): void
+    {
+        $this->application_deployment_queue->addLogEntry('Verifying containers are running...');
+        $this->execute_remote_command(
+            [
+                "docker ps --filter \"label=coolify.applicationId={$this->application->id}\" --format '{{.Names}}'",
+                'save' => 'running_containers',
+                'hidden' => true,
+            ],
+        );
+        $containers = $this->saved_outputs->get('running_containers');
+        if (empty(trim($containers))) {
+            $this->application_deployment_queue->addLogEntry('ERROR: No containers are running after deployment. Checking for failures...', 'stderr');
+            $this->execute_remote_command(
+                [
+                    "docker compose --project-name {$this->application->uuid} --project-directory {$this->workdir} ps -a",
+                    'hidden' => true,
+                ],
+            );
+            $this->application_deployment_queue->addLogEntry('Deployment failed: Containers failed to start. Please check the logs above.', 'stderr');
+            throw new DeploymentException('Containers failed to start - no running containers detected after docker compose up', 500);
+        }
+        $this->application_deployment_queue->addLogEntry('Verified: Containers are running.');
     }
 
     private function analyzeBuildTimeVariables($variables)

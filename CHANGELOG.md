@@ -1190,7 +1190,81 @@ All notable changes to this project will be documented in this file.
 - *(service)* Update autobase to version 2.5 (#7923)
 - *(service)* Add chibisafe template (#5808)
 - *(ui)* Improve sidebar menu items styling (#7928)
-- *(service)* Improve open-archiver
+- *(template)* Add open archiver template (#6593)
+- *(service)* Add linkding template (#6651)
+- *(service)* Add glip template (#7937)
+- *(templates)* Add Sessy docker compose template (#7951)
+- *(api)* Add update urls support to services api
+- *(api)* Improve service urls update
+- *(api)* Add url update support to services api (#7929)
+- *(api)* Improve docker_compose_domains
+- *(api)* Add more allowed fields
+- *(notifications)* Add mattermost notifications (#7963)
+- *(service)* Add back soketi-app-manager
+- *(service)* Upgrade checkmate to v3 (#7995)
+- *(service)* Update pterodactyl version (#7981)
+- *(service)* Add langflow template (#8006)
+- *(service)* Upgrade listmonk to v6
+- *(service)* Add alexandrie template (#8021)
+- *(service)* Upgrade formbricks to v4 (#8022)
+- *(service)* Add goatcounter template (#8029)
+- *(installer)* Add tencentos as a supported os
+- *(installer)* Update nightly install script
+- Update pr template to remove unnecessary quote blocks
+- *(service)* Add satisfactory game server (#8056)
+- *(service)* Disable mautic (#8088)
+- *(service)* Add bento-pdf (#8095)
+- *(ui)* Add official postgres 18 support
+- *(database)* Add official postgres 18 support
+- *(ui)* Use 2 column layout
+- *(database)* Add official postgres 18 and pgvector 18 support (#8143)
+- *(ui)* Improve global search with uuid and pr support (#7901)
+- *(openclaw)* Add Openclaw service with environment variables and health checks
+- *(service)* Disable maybe
+- *(service)* Disable maybe (#8167)
+- *(service)* Add sure
+- *(service)* Add sure (#8157)
+- *(docker)* Install PHP sockets extension in development environment
+- *(services)* Add Spacebot service with custom logo support (#8427)
+- Expose scheduled tasks to API
+- *(api)* Add OpenAPI for managing scheduled tasks for applications and services
+- *(api)* Add delete endpoints for scheduled tasks in applications and services
+- *(api)* Add update endpoints for scheduled tasks in applications and services
+- *(api)* Add scheduled tasks CRUD API with auth and validation (#8428)
+- *(monitoring)* Add scheduled job monitoring dashboard (#8433)
+- *(service)* Disable plane
+- *(service)* Disable plane (#8580)
+- *(service)* Disable pterodactyl panel and pterodactyl wings
+- *(service)* Disable pterodactyl panel and pterodactyl wings (#8512)
+- *(service)* Upgrade beszel and beszel-agent to v0.18
+- *(service)* Upgrade beszel and beszel-agent to v0.18 (#8513)
+- Add command healthcheck type
+- Require health check command for 'cmd' type with backend validation and frontend update
+- *(healthchecks)* Add command health checks with input validation
+- *(healthcheck)* Add command-based health check support (#8612)
+- *(jobs)* Optimize async job dispatches and enhance Stripe subscription sync
+- *(jobs)* Add queue delay resilience to scheduled job execution
+- *(scheduler)* Add pagination to skipped jobs and filter manager start events
+- Add comment field to environment variables
+- Limit comment field to 256 characters for environment variables
+- Enhance environment variable handling to support mixed formats and add comprehensive tests
+- Add comment field to shared environment variables
+- Show comment field for locked environment variables
+- Add function to extract inline comments from docker-compose YAML environment variables
+- Add magic variable detection and update UI behavior accordingly
+- Add comprehensive environment variable parsing with nested resolution and hardcoded variable detection
+- *(models)* Add is_required to EnvironmentVariable fillable array
+- Add comment field to environment variables (#7269)
+- *(service)* Pydio-cells.yml
+- Pydio cells svg
+- Pydio-cells.yml pin to stable version
+- *(service)* Add Pydio cells (#8323)
+- *(service)* Disable minio community edition
+- *(service)* Disable minio community edition (#8686)
+- *(subscription)* Add Stripe server limit quantity adjustment flow
+- *(subscription)* Add refunds and cancellation management (#8637)
+- Implement OAuth independent registration and fix SSH port for deploy keys
+- Applied 5 medium PRs (8655, 8654, 8633, 8629, 8662)
 
 ### 🐛 Bug Fixes
 
@@ -3773,6 +3847,7 @@ All notable changes to this project will be documented in this file.
 - *(scheduling)* Change redis cleanup command frequency from hourly to weekly for better resource management
 - *(versions)* Update coolify version numbers in versions.json and constants.php to 4.0.0-beta.420.5 and 4.0.0-beta.420.6
 - *(database)* Ensure internal port defaults correctly for unsupported database types in StartDatabaseProxy
+- *(git)* Tracking issue due to case sensitivity
 - *(versions)* Update coolify version numbers in versions.json and constants.php to 4.0.0-beta.420.6 and 4.0.0-beta.420.7
 - *(scheduling)* Remove unnecessary padding from scheduled task form layout for improved UI consistency
 - *(horizon)* Update queue configuration to use environment variable for dynamic queue management
@@ -3796,7 +3871,6 @@ All notable changes to this project will be documented in this file.
 - *(service)* Triliumnext platform and link
 - *(application)* Update service environment variables when generating domain for Docker Compose
 - *(application)* Add option to suppress toast notifications when loading compose file
-- *(git)* Tracking issue due to case sensitivity
 - *(git)* Tracking issue due to case sensitivity
 - *(git)* Tracking issue due to case sensitivity
 - *(ui)* Delete button width on small screens (#6308)
@@ -4422,6 +4496,118 @@ All notable changes to this project will be documented in this file.
 - *(api)* Deprecate applications compose endpoint
 - *(api)* Applications post and patch endpoints
 - *(api)* Applications create and patch endpoints (#7917)
+- *(service)* Sftpgo port
+- *(env)* Only cat .env file in dev
+- *(api)* Encoding checks (#7944)
+- *(env)* Only show nixpacks plan variables section in dev
+- Switch custom labels check to UTF-8
+- *(api)* One click service name and description cannot be set during creation
+- *(ui)* Improve volume mount warning for compose applications (#7947)
+- *(api)* Show an error if the same 2 urls are provided
+- *(preview)* Docker compose preview URLs (#7959)
+- *(api)* Check domain conflicts within the request
+- *(api)* Include docker_compose_domains in domain conflict check
+- *(api)* Is_static and docker network missing
+- *(api)* If domains field is empty clear the fqdn column
+- *(api)* Application endpoint issues part 2 (#7948)
+- Optimize queries and caching for projects and environments
+- *(perf)* Eliminate N+1 queries from InstanceSettings and Server lookups (#7966)
+- Update version numbers to 4.0.0-beta.462 and 4.0.0-beta.463
+- *(service)* Update seaweedfs logo (#7971)
+- *(service)* Soju svg
+- *(service)* Autobase database is not persisted correctly (#7978)
+- *(ui)* Make tooltips a bit wider
+- *(ui)* Modal issues
+- *(validation)* Add @, / and & support to names and descriptions
+- *(backup)* Postgres restore arithmetic syntax error (#7997)
+- *(service)* Users unable to create their first ente account without SMTP (#7986)
+- *(ui)* Horizontal overflow on application and service headings (#7970)
+- *(service)* Supabase studio settings redirect loop (#7828)
+- *(env)* Skip escaping for valid JSON in environment variables (#6160)
+- *(service)* Disable kong response buffering and increase timeouts (#7864)
+- *(service)* Rocketchat fails to start due to database version incompatibility (#7999)
+- *(service)* N8n v2 with worker timeout error
+- *(service)* Elasticsearch-with-kibana not generating account token
+- *(service)* Elasticsearch-with-kibana not generating account token (#8067)
+- *(service)* Kimai fails to start (#8027)
+- *(service)* Reactive-resume template (#8048)
+- *(api)* Infinite loop with github app with many repos (#8052)
+- *(env)* Skip escaping for valid JSON in environment variables (#8080)
+- *(docker)* Update PostgreSQL version to 16 in Dockerfile
+- *(validation)* Enforce url validation for instance domain (#8078)
+- *(service)* Bluesky pds invite code doesn't generate (#8081)
+- *(service)* Bugsink login fails due to cors (#8083)
+- *(service)* Strapi doesn't start (#8084)
+- *(service)* Activepieces postgres 18 volume mount (#8098)
+- *(service)* Forgejo login failure (#8145)
+- *(database)* Pgvector 18 version is not parsed properly
+- *(labels)* Make sure name is slugified
+- *(parser)* Replace dashes and dots in auto generated envs
+- Stop database proxy when is_public changes to false (#8138)
+- *(docs)* Update documentation link for Openclaw service
+- *(api-docs)* Use proper schema references for environment variable endpoints (#8239)
+- *(ui)* Fix datalist border color and add repository selection watcher (#8240)
+- *(server)* Improve IP uniqueness validation with team-specific error messages
+- *(jobs)* Initialize status variable in checkHetznerStatus (#8359)
+- *(jobs)* Handle queue timeouts gracefully in Horizon (#8360)
+- *(push-server-job)* Skip containers with empty service subId (#8361)
+- *(database)* Disable proxy on port allocation failure (#8362)
+- *(sentry)* Use withScope for SSH retry event tracking (#8363)
+- *(api)* Add a newline to openapi.json
+- *(server)* Improve IP uniqueness validation with team-specific error messages
+- *(service)* Glitchtip webdashboard doesn't load
+- *(service)* Glitchtip webdashboard doesn't load (#8249)
+- *(api)* Improve scheduled tasks API with auth, validation, and execution endpoints
+- *(api)* Improve scheduled tasks validation and delete logic
+- *(security)* Harden deployment paths and deploy abilities (#8549)
+- *(service)* Always enable force https labels
+- *(traefik)* Respect force https in service labels (#8550)
+- *(team)* Include webhook notifications in enabled check (#8557)
+- *(service)* Resolve team lookup via service relationship
+- *(service)* Resolve team lookup via service relationship (#8559)
+- *(database)* Chown redis/keydb configs when custom conf set (#8561)
+- *(version)* Update coolify version to 4.0.0-beta.464 and nightly version to 4.0.0-beta.465
+- *(applications)* Treat zero private_key_id as deploy key (#8563)
+- *(deploy)* Split BuildKit and secrets detection (#8565)
+- *(auth)* Prevent CSRF redirect loop during 2FA challenge (#8596)
+- *(input)* Prevent eye icon flash on password fields before Alpine.js loads (#8599)
+- *(api)* Correct permission requirements for POST endpoints (#8600)
+- *(health-checks)* Prevent command injection in health check commands (#8611)
+- *(auth)* Prevent cross-tenant IDOR in resource cloning (#8613)
+- *(docker)* Centralize command escaping in executeInDocker helper (#8615)
+- *(api)* Add team authorization to domains_by_server endpoint (#8616)
+- *(ca-cert)* Prevent command injection via base64 encoding (#8617)
+- *(scheduler)* Add self-healing for stale Redis locks and detection in UI (#8618)
+- *(health-checks)* Sanitize and validate CMD healthcheck commands
+- *(healthchecks)* Remove redundant newline sanitization from CMD healthcheck
+- *(soketi)* Make host binding configurable for IPv6 support (#8619)
+- *(ssh)* Automatically fix SSH directory permissions during upgrade (#8635)
+- *(jobs)* Prevent non-due jobs firing on restart and enrich skip logs with resource links
+- Application rollback uses correct commit sha
+- *(rollback)* Escape commit SHA to prevent shell injection
+- Save comment field when creating application environment variables
+- Allow editing comments on locked environment variables
+- Add Update button for locked environment variable comments
+- Remove duplicate delete button from locked environment variable view
+- Position Update button next to comment field for locked variables
+- Preserve existing comments in bulk update and always show save notification
+- Update success message logic to only show when changes are made
+- *(bootstrap)* Add bounds check to extractBalancedBraceContent
+- Pydio-cells svg path typo
+- *(database)* Handle PDO constant name change for PGSQL_ATTR_DISABLE_PREPARES
+- *(proxy)* Handle IPv6 CIDR notation in Docker network gateways (#8703)
+- *(ssh)* Prevent RCE via SSH command injection (#8748)
+- *(service)* Cloudreve doesn't persist data across restarts
+- *(service)* Cloudreve doesn't persist data across restarts (#8740)
+- Join link should be set correctly in the env variables
+- *(service)* Ente photos join link doesn't work (#8727)
+- *(subscription)* Harden quantity updates and proxy trust behavior
+- *(auth)* Resolve 419 session errors with domain-based access and Cloudflare Tunnels (#8749)
+- *(server)* Handle limit edge case and IPv6 allowlist dedupe
+- *(server-limit)* Re-enable force-disabled servers at limit
+- *(ip-allowlist)* Add IPv6 CIDR support for API access restrictions (#8750)
+- *(proxy)* Remove ipv6 cidr network remediation
+- Add proxy delay in rolling updates + verify containers started
 
 ### 💼 Other
 
@@ -4886,6 +5072,8 @@ All notable changes to this project will be documented in this file.
 - CVE-2025-55182 React2shell infected supabase/studio:2025.06.02-sha-8f2993d
 - Bump superset to 6.0.0
 - Trim whitespace from domain input in instance settings (#7837)
+- Upgrade postgres client to fix build error
+- Application rollback uses correct commit sha (#8576)
 
 ### 🚜 Refactor
 
@@ -5510,6 +5698,13 @@ All notable changes to this project will be documented in this file.
 - Move all env sorting to one place
 - *(api)* Make docker_compose_raw description more clear
 - *(api)* Update application create endpoints docs
+- *(api)* Application urls validation
+- *(services)* Improve some service slogans
+- *(ssh-retry)* Remove Sentry tracking from retry logic
+- *(ssh-retry)* Remove Sentry tracking from retry logic
+- *(jobs)* Split task skip checks into critical and runtime phases
+- Add explicit fillable array to EnvironmentVariable model
+- Replace inline note with callout component for consistency
 
 ### 📚 Documentation
 
@@ -5616,7 +5811,6 @@ All notable changes to this project will be documented in this file.
 - Update changelog
 - *(tests)* Update testing guidelines for unit and feature tests
 - *(sync)* Create AI Instructions Synchronization Guide and update CLAUDE.md references
-- Update changelog
 - *(database-patterns)* Add critical note on mass assignment protection for new columns
 - Clarify cloud-init script compatibility
 - Update changelog
@@ -5647,7 +5841,16 @@ All notable changes to this project will be documented in this file.
 - Update application architecture and database patterns for request-level caching best practices
 - Remove git worktree symlink instructions from CLAUDE.md
 - Remove git worktree symlink instructions from CLAUDE.md (#7908)
-- Update changelog
+- Add transcript lol link and logo to readme (#7331)
+- *(api)* Change domains to urls
+- *(api)* Improve domains API docs
+- *(api)* Improve app endpoint deprecation description
+- Add Coolify design system reference
+- Add Coolify design system reference (#8237)
+- *(sponsors)* Add huge sponsors section and reorganize list
+- *(application)* Add comments explaining commit selection logic for rollback support
+- *(readme)* Add VPSDime to Big Sponsors list
+- *(readme)* Move MVPS to Huge Sponsors section
 
 ### ⚡ Performance
 
@@ -5686,6 +5889,12 @@ All notable changes to this project will be documented in this file.
 - Add tests for shared environment variable spacing and resolution
 - Add comprehensive preview deployment port and path tests
 - Add comprehensive preview deployment port and path tests (#7677)
+- Add Pest browser testing with SQLite :memory: schema
+- Add dashboard test and improve browser test coverage
+- Migrate to SQLite :memory: and add Pest browser testing (#8364)
+- *(rollback)* Use full-length git commit SHA values in test fixtures
+- *(rollback)* Verify shell metacharacter escaping in git commit parameter
+- *(factories)* Add missing model factories for app test suite
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -6293,10 +6502,10 @@ All notable changes to this project will be documented in this file.
 - *(versions)* Update Coolify versions to 4.0.0-beta.420.2 and 4.0.0-beta.420.3 in multiple files
 - *(versions)* Bump coolify and nightly versions to 4.0.0-beta.420.3 and 4.0.0-beta.420.4 respectively
 - *(versions)* Update coolify and nightly versions to 4.0.0-beta.420.4 and 4.0.0-beta.420.5 respectively
-- *(service)* Update Nitropage template (#6181)
-- *(versions)* Update all version
 - *(bump)* Update composer deps
 - *(version)* Bump Coolify version to 4.0.0-beta.420.6
+- *(service)* Update Nitropage template (#6181)
+- *(versions)* Update all version
 - *(service)* Improve matrix service
 - *(service)* Format runner service
 - *(service)* Improve sequin
@@ -6399,6 +6608,71 @@ All notable changes to this project will be documented in this file.
 - *(services)* Upgrade service template json files
 - *(api)* Update openapi json and yaml
 - *(api)* Regenerate openapi docs
+- Prepare for PR
+- *(api)* Improve current request error message
+- *(api)* Improve current request error message
+- *(api)* Update openapi files
+- *(service)* Update service templates json
+- *(services)* Update service template json files
+- *(service)* Use major version for openpanel (#8053)
+- Prepare for PR
+- *(services)* Update service template json files
+- Bump coolify version
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- *(scheduler)* Fix scheduled job duration metric (#8551)
+- Prepare for PR
+- Prepare for PR
+- *(horizon)* Make max time configurable (#8560)
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- *(ui)* Widen project heading nav spacing (#8564)
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- Add pr quality check workflow
+- Do not build or generate changelog on pr-quality changes
+- Add pr quality check via anti slop action (#8344)
+- Improve pr quality workflow
+- Delete label removal workflow
+- Improve pr quality workflow (#8374)
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- *(repo)* Improve contributor PR template
+- Add anti-slop v0.2 options to the pr-quality check
+- Improve pr template and quality check workflow (#8574)
+- Prepare for PR
+- Prepare for PR
+- Prepare for PR
+- *(ui)* Add labels header
+- *(ui)* Add container labels header (#8752)
+- *(templates)* Update n8n templates to 2.10.2 (#8679)
 
 ### ◀️ Revert
 

@@ -20,7 +20,12 @@ class OauthController extends Controller
         try {
             $oauth_setting = OauthSetting::where('provider', $provider)->first();
             $oauthUser = get_socialite_provider($provider)->user();
-            $user = User::whereEmail($oauthUser->email)->first();
+            $email = trim((string) $oauthUser->email);
+            if ($email === '') {
+                abort(403, 'OAuth provider did not return an email address');
+            }
+            $email = strtolower($email);
+            $user = User::whereEmail($email)->first();
             if (! $user) {
                 $settings = instanceSettings();
                 if (! $settings->is_registration_enabled && ! $oauth_setting->is_registration_enabled) {
@@ -29,7 +34,7 @@ class OauthController extends Controller
 
                 $user = User::create([
                     'name' => $oauthUser->name,
-                    'email' => $oauthUser->email,
+                    'email' => $email,
                 ]);
             }
             Auth::login($user);

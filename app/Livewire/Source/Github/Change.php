@@ -5,8 +5,11 @@ namespace App\Livewire\Source\Github;
 use App\Jobs\GithubAppPermissionJob;
 use App\Models\GithubApp;
 use App\Models\PrivateKey;
+use App\Rules\SafeExternalUrl;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
@@ -71,24 +74,29 @@ class Change extends Component
 
     public $privateKeys;
 
-    protected $rules = [
-        'name' => 'required|string',
-        'organization' => 'nullable|string',
-        'apiUrl' => 'required|string',
-        'htmlUrl' => 'required|string',
-        'customUser' => 'required|string',
-        'customPort' => 'required|int',
-        'appId' => 'nullable|int',
-        'installationId' => 'nullable|int',
-        'clientId' => 'nullable|string',
-        'clientSecret' => 'nullable|string',
-        'webhookSecret' => 'nullable|string',
-        'isSystemWide' => 'required|bool',
-        'contents' => 'nullable|string',
-        'metadata' => 'nullable|string',
-        'pullRequests' => 'nullable|string',
-        'privateKeyId' => 'nullable|int',
-    ];
+    public string $manifestState = '';
+
+    protected function rules(): array
+    {
+        return [
+            'name' => 'required|string',
+            'organization' => 'nullable|string',
+            'apiUrl' => ['required', 'string', 'url', new SafeExternalUrl],
+            'htmlUrl' => ['required', 'string', 'url', new SafeExternalUrl],
+            'customUser' => 'required|string',
+            'customPort' => 'required|int',
+            'appId' => 'nullable|int',
+            'installationId' => 'nullable|int',
+            'clientId' => 'nullable|string',
+            'clientSecret' => 'nullable|string',
+            'webhookSecret' => 'nullable|string',
+            'isSystemWide' => 'required|bool',
+            'contents' => 'nullable|string',
+            'metadata' => 'nullable|string',
+            'pullRequests' => 'nullable|string',
+            'privateKeyId' => 'nullable|int',
+        ];
+    }
 
     public function boot()
     {
@@ -141,6 +149,24 @@ class Change extends Component
             $this->metadata = $this->github_app->metadata;
             $this->pullRequests = $this->github_app->pull_requests;
         }
+    }
+
+    private function githubAppSetupStateCacheKey(string $state): string
+    {
+        return 'github-app-setup-state:'.hash('sha256', $state);
+    }
+
+    private function createGithubAppSetupState(string $action): string
+    {
+        $state = Str::random(64);
+
+        Cache::put($this->githubAppSetupStateCacheKey($state), [
+            'action' => $action,
+            'github_app_id' => $this->github_app->id,
+            'team_id' => $this->github_app->team_id,
+        ], now()->addMinutes(60));
+
+        return $state;
     }
 
     public function checkPermissions()
@@ -207,6 +233,7 @@ class Change extends Component
             // Override name with kebab case for display
             $this->name = str($this->github_app->name)->kebab();
             $this->fqdn = $settings->fqdn;
+            $this->manifestState = $this->createGithubAppSetupState('manifest');
 
             if ($settings->public_ipv4) {
                 $this->ipv4 = 'http://'.$settings->public_ipv4.':'.config('app.port');
@@ -239,7 +266,7 @@ class Change extends Component
             if (isCloud() && ! isDev()) {
                 $this->webhook_endpoint = config('app.url');
             } else {
-                $this->webhook_endpoint = $this->ipv4 ?? '';
+                $this->webhook_endpoint = $this->fqdn ?? $this->ipv4 ?? '';
                 $this->is_system_wide = $this->github_app->is_system_wide;
             }
         } catch (\Throwable $e) {

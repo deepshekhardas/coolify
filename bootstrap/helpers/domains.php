@@ -4,6 +4,11 @@ use App\Models\Application;
 use App\Models\ServiceApplication;
 use Illuminate\Support\Collection;
 
+function isValidDomainUrl(string $url): bool
+{
+    return filter_var(str_replace('_', '-', $url), FILTER_VALIDATE_URL) !== false;
+}
+
 function checkDomainUsage(ServiceApplication|Application|null $resource = null, ?string $domain = null)
 {
     $conflicts = [];

@@ -301,6 +301,7 @@ class Server extends BaseModel
         'traefik_outdated_info',
         'server_metadata',
         'ip_previous',
+        'unreachable_count',
     ];
 
     use HasSafeStringAttribute;

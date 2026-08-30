@@ -25,7 +25,7 @@ All notable changes to this project will be documented in this file.
 - Languagetool service
 - Send version with update request
 - Service secrets
-- Webhooks inititate all applications with the correct branch
+- Webhooks initiate all applications with the correct branch
 - Check ssl for new apps/services first
 - Autodeploy pause
 - Install pnpm into docker image if pnpm lock file is used
@@ -167,7 +167,7 @@ All notable changes to this project will be documented in this file.
 - *(ui)* Add libretranslate service icon
 - Handle invite_only plausible analytics
 - Init h2c (http2/grpc) support
-- Http + h2c paralel
+- Http + h2c parallel
 - Github raw icon url
 - Remove svg support
 - Add host path to any container
